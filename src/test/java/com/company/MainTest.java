@@ -107,4 +107,53 @@ class MainTest {
                 Main.getFormattedPriceStringFromCents(price)
         );
     }
+
+    @Test
+    void getDiscountTotal() {
+        List<String> order = new ArrayList<>();
+        order.add("apple");
+        order.add("apple");
+        order.add("apple");
+
+        long discountTotal = 0l;
+
+        discountTotal = Main.getDiscountTotal(order);
+        Assertions.assertEquals(
+                60l,
+                discountTotal
+        );
+
+        order.clear();
+        order.add("apple");
+        order.add("apple");
+        order.add("apple");
+        order.add("apple");
+
+        discountTotal = Main.getDiscountTotal(order);
+        Assertions.assertEquals(
+                120l,
+                discountTotal
+        );
+
+        order.clear();
+        order.add("orange");
+        order.add("orange");
+        order.add("orange");
+        discountTotal = Main.getDiscountTotal(order);
+        Assertions.assertEquals(
+                25l,
+                discountTotal
+        );
+
+        order.clear();
+        order.add("orange");
+        order.add("orange");
+        order.add("orange");
+        order.add("orange");
+        discountTotal = Main.getDiscountTotal(order);
+        Assertions.assertEquals(
+                25l,
+                discountTotal
+        );
+    }
 }

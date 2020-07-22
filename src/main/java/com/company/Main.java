@@ -1,8 +1,6 @@
 package com.company;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -56,8 +54,12 @@ public class Main {
             System.out.println("An " + item + " costs " + cost);
         }
 
+        // Get discounts...
+        // it will be easier to calculate discounts after the fact instead of trying to count it up as we go.
+        long discountTotal = getDiscountTotal(order);
+
         // print out the total in the right format
-        Long total = prices.stream().mapToLong(Long::longValue).sum();
+        Long total = prices.stream().mapToLong(Long::longValue).sum() - discountTotal;
         String totalString = getFormattedPriceStringFromCents(total);
         System.out.println("Here is your total price: " + totalString);
 
@@ -94,6 +96,45 @@ public class Main {
             default:
                 throw new Exception("Product name not found: " + productName);
         }
+    }
+
+    public static long getDiscountTotal(List<String> order) {
+
+        // let's do a frequency count on apples and oranges.
+        // and calculate discounts that way.
+
+        Map<String, Integer> frequencies = new HashMap<>();
+        for (String item : order) {
+            if (frequencies.containsKey(item)) {
+                frequencies.put(
+                        item,
+                        frequencies.get(item) + 1
+                );
+            } else {
+                frequencies.put(
+                        item,
+                        1
+                );
+            }
+        }
+
+        long discountTotal = 0l;
+
+        // buy one get one free on apples
+        if (frequencies.containsKey("apple")) {
+            int numApples = frequencies.get("apple");
+            int numAppleDiscounts = numApples / 2;
+            discountTotal += numAppleDiscounts * 60;
+        }
+
+        // 3 for the price of 2 on oranges
+        if (frequencies.containsKey("orange")) {
+            int numOranges = frequencies.get("orange");
+            int numOrangeDiscounts = numOranges / 3;
+            discountTotal += numOrangeDiscounts * 25;
+        }
+
+        return discountTotal;
     }
 
     public static String getFormattedPriceStringFromCents(long price) {
